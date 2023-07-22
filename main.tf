@@ -1,16 +1,16 @@
-# A random identifiert used for naming resources
+# A random identifier used for naming resources
 resource "random_id" "id" {
   byte_length = 8
 }
 
-# sns topic
+# The SNS topic to send notifications to
 resource "aws_sns_topic" "fsx_health_sns_topic" {
   name              = "fsx-health-topic-${random_id.id.hex}"
   kms_master_key_id = "alias/aws/sns"
   tags              = var.tags
 }
 
-# sns subscription
+# SNS subscriptions
 resource "aws_sns_topic_subscription" "fsx_health_sns_topic_email_target" {
   for_each  = toset(var.email)
   topic_arn = aws_sns_topic.fsx_health_sns_topic.arn
@@ -57,7 +57,7 @@ EOF
   tags   = var.tags
 }
 
-# iam role
+# IAM role
 resource "aws_iam_role" "fsx_health_lambda_role" {
   name = "fsx-health-lambda-role-${random_id.id.hex}"
 
@@ -79,7 +79,7 @@ EOF
   tags               = var.tags
 }
 
-# iam role attachment
+# IAM role attachment
 resource "aws_iam_role_policy_attachment" "fsx_health_permissions" {
   role       = aws_iam_role.fsx_health_lambda_role.name
   policy_arn = aws_iam_policy.fsx_health_lambda_role_policy.arn
@@ -88,7 +88,7 @@ resource "aws_iam_role_policy_attachment" "fsx_health_permissions" {
   aws_iam_role.fsx_health_lambda_role]
 }
 
-# lambda function
+# Lambda function
 resource "aws_lambda_function" "fsx_health_lambda" {
   filename      = "${path.module}/fsx-lambda.zip"
   function_name = "fsx-health-lambda-function-${random_id.id.hex}"
@@ -96,7 +96,6 @@ resource "aws_lambda_function" "fsx_health_lambda" {
   role          = aws_iam_role.fsx_health_lambda_role.arn
   handler       = "fsx-health.lambda_handler"
   runtime       = "python3.8"
-
   environment {
     variables = {
       LambdaSNSTopic = aws_sns_topic.fsx_health_sns_topic.arn

@@ -25,12 +25,12 @@ jobs:
       - uses: rickstaa/action-create-tag@v1
         if: contains(github.event.pull_request.labels.*.name, 'minor')
         with:
-          tag: "${{ steps.semvers.outputs.minor }}"
+          tag: "${{ steps.semvers.outputs.v_minor }}"
       - uses: rickstaa/action-create-tag@v1
         if: contains(github.event.pull_request.labels.*.name, 'major')
         with:
-          tag: "${{ steps.semvers.outputs.major }}"
+          tag: "${{ steps.semvers.outputs.v_major }}"
       - uses: rickstaa/action-create-tag@v1
         if: contains(github.event.pull_request.labels.*.name, 'patch')
         with:
-          tag: "${{ steps.semvers.outputs.patch }}"
+          tag: "${{ steps.semvers.outputs.v_patch }}"
