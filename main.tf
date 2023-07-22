@@ -4,20 +4,22 @@ resource "random_id" "id" {
 }
 
 # sns topic
-resource "aws_sns_topic" "fsx-health-sns-topic" {
-  name = "fsx-health-topic-${random_id.id.hex}"
+resource "aws_sns_topic" "fsx_health_sns_topic" {
+  name              = "fsx-health-topic-${random_id.id.hex}"
   kms_master_key_id = "alias/aws/sns"
+  tags              = var.tags
 }
 
 # sns subscription
-resource "aws_sns_topic_subscription" "fsx-health-sns-topic-email-target" {
-  topic_arn = aws_sns_topic.fsx-health-sns-topic.arn
+resource "aws_sns_topic_subscription" "fsx_health_sns_topic_email_target" {
+  for_each  = toset(var.email)
+  topic_arn = aws_sns_topic.fsx_health_sns_topic.arn
   protocol  = "email"
-  endpoint  = "${var.email}"
+  endpoint  = each.value
 }
 
 # iam policy for lambda role
-resource "aws_iam_policy" "fsx-health-lambda-role-policy" {
+resource "aws_iam_policy" "fsx_health_lambda_role_policy" {
   name        = "fsx-health-lambda-role-policy-${random_id.id.hex}"
   path        = "/"
   description = "IAM policy for fsx health solution lambda"
@@ -52,10 +54,11 @@ resource "aws_iam_policy" "fsx-health-lambda-role-policy" {
     ]
 }
 EOF
+  tags   = var.tags
 }
 
 # iam role
-resource "aws_iam_role" "fsx-health-lambda-role" {
+resource "aws_iam_role" "fsx_health_lambda_role" {
   name = "fsx-health-lambda-role-${random_id.id.hex}"
 
   assume_role_policy = <<EOF
@@ -73,51 +76,53 @@ resource "aws_iam_role" "fsx-health-lambda-role" {
   ]
 }
 EOF
-
+  tags               = var.tags
 }
 
 # iam role attachment
-resource "aws_iam_role_policy_attachment" "fsx-health-permissions" {
-  role       = aws_iam_role.fsx-health-lambda-role.name
-  policy_arn = aws_iam_policy.fsx-health-lambda-role-policy.arn
+resource "aws_iam_role_policy_attachment" "fsx_health_permissions" {
+  role       = aws_iam_role.fsx_health_lambda_role.name
+  policy_arn = aws_iam_policy.fsx_health_lambda_role_policy.arn
 
-  depends_on = [aws_iam_policy.fsx-health-lambda-role-policy,
-  aws_iam_role.fsx-health-lambda-role]
+  depends_on = [aws_iam_policy.fsx_health_lambda_role_policy,
+  aws_iam_role.fsx_health_lambda_role]
 }
 
 # lambda function
-resource "aws_lambda_function" "fsx-health-lambda" {
+resource "aws_lambda_function" "fsx_health_lambda" {
   filename      = "${path.module}/fsx-lambda.zip"
   function_name = "fsx-health-lambda-function-${random_id.id.hex}"
-  description = "Monitor the FSx lifecycle status"
-  role          = aws_iam_role.fsx-health-lambda-role.arn
+  description   = "Monitor the FSx lifecycle status"
+  role          = aws_iam_role.fsx_health_lambda_role.arn
   handler       = "fsx-health.lambda_handler"
   runtime       = "python3.8"
 
-    environment {
+  environment {
     variables = {
-      LambdaSNSTopic = aws_sns_topic.fsx-health-sns-topic.arn
+      LambdaSNSTopic = aws_sns_topic.fsx_health_sns_topic.arn
     }
   }
+  tags = var.tags
 }
 
 # eventbridge rule
-resource "aws_cloudwatch_event_rule" "fsx-health-lambda-schedule" {
-  name = "fsx-health-eventbridge-rule-${random_id.id.hex}"
-  description = "retry scheduled every 60 min"
+resource "aws_cloudwatch_event_rule" "fsx_health_lambda_schedule" {
+  name                = "fsx-health-eventbridge-rule-${random_id.id.hex}"
+  description         = "retry scheduled every 60 min"
   schedule_expression = "rate(60 minutes)"
-  is_enabled = true
+  is_enabled          = true
+  tags                = var.tags
 }
 
-resource "aws_cloudwatch_event_target" "fsx-health-lambda-target" {
-  arn = aws_lambda_function.fsx-health-lambda.arn
-  rule = aws_cloudwatch_event_rule.fsx-health-lambda-schedule.name
+resource "aws_cloudwatch_event_target" "fsx_health_lambda_target" {
+  arn  = aws_lambda_function.fsx_health_lambda.arn
+  rule = aws_cloudwatch_event_rule.fsx_health_lambda_schedule.name
 }
 
-resource "aws_lambda_permission" "allow-cw-call-lambda" {
-  statement_id = "AllowExecutionFromCloudWatch"
-  action = "lambda:InvokeFunction"
-  function_name = aws_lambda_function.fsx-health-lambda.function_name
-  principal = "events.amazonaws.com"
-  source_arn = aws_cloudwatch_event_rule.fsx-health-lambda-schedule.arn
+resource "aws_lambda_permission" "allow_cw_call_lambda" {
+  statement_id  = "AllowExecutionFromCloudWatch"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.fsx_health_lambda.function_name
+  principal     = "events.amazonaws.com"
+  source_arn    = aws_cloudwatch_event_rule.fsx_health_lambda_schedule.arn
 }
