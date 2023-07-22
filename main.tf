@@ -107,8 +107,8 @@ resource "aws_lambda_function" "fsx_health_lambda" {
 # eventbridge rule
 resource "aws_cloudwatch_event_rule" "fsx_health_lambda_schedule" {
   name                = "fsx-health-eventbridge-rule-${random_id.id.hex}"
-  description         = "retry scheduled every 60 min"
-  schedule_expression = "rate(60 minutes)"
+  description         = "Scheduled execution of the FSx monitor"
+  schedule_expression = var.schedule_expression
   is_enabled          = true
   tags                = var.tags
 }
