@@ -4,6 +4,12 @@ variable "email" {
   default     = []
 }
 
+variable "schedule_expression" {
+  description = "The schedule expression for the CloudWatch event rule. Default is 'rate(60 minutes)'."
+  type        = string
+  default     = "rate(60 minutes)"
+}
+
 variable "tags" {
   description = "A map of tags to add to all resources. Default is empty map."
   type        = map(string)
