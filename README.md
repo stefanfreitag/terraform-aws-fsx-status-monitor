@@ -1,3 +1,10 @@
+# terraform-aws-fsx-health
+
+[![Terraform Version](https://img.shields.io/badge/Terraform%20Version->=1.0-blue.svg)](https://releases.hashicorp.com/terraform/)
+[![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+
+This module deploys a Lambda function that checks the health of FSx file systems and sends a notification if a file system is unhealthy.
+
 <!-- BEGIN_TF_DOCS -->
 ## Requirements
 

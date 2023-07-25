@@ -1,7 +1,9 @@
 # Example using the default configuration
 
-Deploys the FSx status monitor with no additional configuration.
-Especially, no SNS topic subscriber is created.
+Deploys the FSx status monitor with no additional configuration:
+
+- No SNS topic subscriber is set up.
+- The monitor is scheduled to run every 60 minutes.
 
 <!-- BEGIN_TF_DOCS -->
 ## Requirements

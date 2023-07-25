@@ -1,7 +1,9 @@
 # Example using a custom schedule
 
 Deploys the FSx status monitor with a non-default configuration:
-the monitor is scheduled to run every 5 minutes instead of the default interval.
+
+- No SNS topic subscriber is set up.
+- The monitor is scheduled to run every 15 minutes instead of the default interval.
 
 <!-- BEGIN_TF_DOCS -->
 ## Requirements
