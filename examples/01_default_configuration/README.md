@@ -1,7 +1,9 @@
 # Example using the default configuration
 
-Deploys the FSx status monitor with no additional configuration.
-Especially, no SNS topic subscriber is created.
+Deploys the FSx status monitor with no additional configuration:
+
+- No SNS topic subscriber is set up.
+- The monitor is scheduled to run every 60 minutes.
 
 <!-- BEGIN_TF_DOCS -->
 ## Requirements
@@ -31,5 +33,8 @@ No inputs.
 
 ## Outputs
 
-No outputs.
+| Name | Description |
+|------|-------------|
+| <a name="output_role_arn"></a> [role\_arn](#output\_role\_arn) | The ARN of the IAM role. |
+| <a name="output_sns_topic_arn"></a> [sns\_topic\_arn](#output\_sns\_topic\_arn) | The ARN of the SNS topic. |
 <!-- END_TF_DOCS -->
