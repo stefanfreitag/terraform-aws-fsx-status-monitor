@@ -90,12 +90,16 @@ resource "aws_iam_role_policy_attachment" "fsx_health_permissions" {
 
 # Lambda function
 resource "aws_lambda_function" "fsx_health_lambda" {
-  filename      = "${path.module}/fsx-lambda.zip"
-  function_name = "fsx-health-lambda-function-${random_id.id.hex}"
-  description   = "Monitor the FSx lifecycle status"
-  role          = aws_iam_role.fsx_health_lambda_role.arn
-  handler       = "fsx-health.lambda_handler"
-  runtime       = "python3.8"
+  filename                       = "${path.module}/fsx-lambda.zip"
+  function_name                  = "fsx-health-lambda-function-${random_id.id.hex}"
+  description                    = "Monitor the FSx lifecycle status"
+  role                           = aws_iam_role.fsx_health_lambda_role.arn
+  handler                        = "fsx-health.lambda_handler"
+  runtime                        = "python3.8"
+  reserved_concurrent_executions = 1
+  tracing_config {
+    mode = "Active"
+  }
   environment {
     variables = {
       LambdaSNSTopic = aws_sns_topic.fsx_health_sns_topic.arn
