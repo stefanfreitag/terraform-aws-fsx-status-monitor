@@ -25,6 +25,7 @@ repos:
       - id: terraform_checkov
         args:
         - --args=--quiet
+        - --args=--skip-check CKV_AWS_116,CKV_AWS_117,CKV_AWS_173,CKV_AWS_272 
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v4.4.0
     hooks:

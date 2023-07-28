@@ -48,7 +48,7 @@ resource "aws_iam_policy" "fsx_health_lambda_role_policy" {
             "Action": [
                 "sns:Publish"
             ],
-            "Resource": "*",
+            "Resource": "${aws_sns_topic.fsx_health_sns_topic.arn}",
             "Effect": "Allow"
         }
     ]
