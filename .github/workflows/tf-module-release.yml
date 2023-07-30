@@ -1,40 +1,28 @@
-name: tf-module-release
-on:
-  pull_request:
-    types: [closed]
+name: Release
 
-permissions:
-  contents: write
- 
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
 jobs:
   release:
-    if: github.event.pull_request.merged == true
+    name: Release
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout
+        uses: actions/checkout@v3
         with:
+          persist-credentials: false
           fetch-depth: 0
 
-      - name: 'Get Previous tag'
-        id: previoustag
-        uses: "WyriHaximus/github-action-get-previous-tag@v1"
+      - name: Release
+        uses: cycjimmy/semantic-release-action@v3
+        with:
+          semantic_version: 18.0.0
+          extra_plugins: |
+            @semantic-release/changelog@6.0.0
+            @semantic-release/git@10.0.0
+            conventional-changelog-conventionalcommits@4.6.3
         env:
-          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
-
-      - name: 'Get next version'
-        id: semvers
-        uses: "WyriHaximus/github-action-next-semvers@v1"
-        with:
-          version: ${{ steps.previoustag.outputs.tag }}
-      - uses: rickstaa/action-create-tag@v1
-        if: contains(github.event.pull_request.labels.*.name, 'minor')
-        with:
-          tag: "${{ steps.semvers.outputs.v_minor }}"
-      - uses: rickstaa/action-create-tag@v1
-        if: contains(github.event.pull_request.labels.*.name, 'major')
-        with:
-          tag: "${{ steps.semvers.outputs.v_major }}"
-      - uses: rickstaa/action-create-tag@v1
-        if: contains(github.event.pull_request.labels.*.name, 'patch')
-        with:
-          tag: "${{ steps.semvers.outputs.v_patch }}"
+          GITHUB_TOKEN: ${{ secrets.SEMANTIC_RELEASE_TOKEN }}
