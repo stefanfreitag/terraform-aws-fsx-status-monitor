@@ -1,29 +1,39 @@
 // For format details, see https://aka.ms/devcontainer.json. For config options, see the
-// README at: https://github.com/devcontainers/templates/tree/main/src/ubuntu
+// README at: https://github.com/devcontainers/templates/tree/main/src/alpine
 {
-	"name": "Ubuntu",
-	// Or use a Dockerfile or Docker Compose file. More info: https://containers.dev/guide/dockerfile
-	"image": "mcr.microsoft.com/devcontainers/base:jammy",
-	"features": {
-		"ghcr.io/devcontainers/features/terraform:1": {},
-		"ghcr.io/devcontainers-contrib/features/checkov:1": {},
-		"ghcr.io/devcontainers-contrib/features/pre-commit:2": {},
-		"ghcr.io/devcontainers-contrib/features/terraform-docs:1": {},
-		"ghcr.io/devcontainers-contrib/features/tfsec:1": {}
-	}
-
+	"name": "devcontainer",
+	"image": "mcr.microsoft.com/vscode/devcontainers/base:ubuntu-22.04",
 	// Features to add to the dev container. More info: https://containers.dev/features.
-	// "features": {},
-
+	"features": {
+		"ghcr.io/devcontainers/features/aws-cli:1": {
+			"version": "latest"
+		},
+		"ghcr.io/devcontainers-contrib/features/checkov:1": {
+			"version": "latest"
+		},
+		"ghcr.io/devcontainers/features/terraform:1": {
+			"version": "1.5.0",
+			"tflint": "0.47.0",
+			"installTFsec": "true",
+			"installTerraformDocs": "true"
+		},
+		"ghcr.io/devcontainers-contrib/features/pre-commit:2": {
+			"version": "latest"
+		},
+		"ghcr.io/devcontainers-contrib/features/terrascan:1": {
+			"version": "latest"
+		}
+	},
+	"shutdownAction": "stopContainer",
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
 	// "forwardPorts": [],
-
 	// Use 'postCreateCommand' to run commands after the container is created.
-	// "postCreateCommand": "uname -a",
-
+	"postCreateCommand": {
+		"one": "tflint --init",
+		"two": "pre-commit"
+	},
 	// Configure tool-specific properties.
 	// "customizations": {},
-
 	// Uncomment to connect as root instead. More info: https://aka.ms/dev-containers-non-root.
 	// "remoteUser": "root"
 }

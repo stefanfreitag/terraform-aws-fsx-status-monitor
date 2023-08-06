@@ -30,7 +30,6 @@ resource "aws_iam_policy" "fsx_health_lambda_role_policy" {
     "Statement": [
         {
             "Action": [
-                "logs:CreateLogGroup",
                 "logs:CreateLogStream",
                 "logs:PutLogEvents"
             ],
@@ -55,6 +54,13 @@ resource "aws_iam_policy" "fsx_health_lambda_role_policy" {
 }
 EOF
   tags   = var.tags
+}
+
+# Log group for the Lambda function
+resource "aws_cloudwatch_log_group" "fsx_health_lambda_log_groups" {
+  name              = "/aws/lambda/fsx-health-lambda-function-${random_id.id.hex}"
+  retention_in_days = var.log_retion_period_in_days
+  tags              = var.tags
 }
 
 # IAM role
