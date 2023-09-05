@@ -102,6 +102,7 @@ resource "aws_lambda_function" "fsx_health_lambda" {
   role                           = aws_iam_role.fsx_health_lambda_role.arn
   handler                        = "fsx-health.lambda_handler"
   runtime                        = "python3.8"
+  memory_size                    = var.memory_size
   reserved_concurrent_executions = 1
   tracing_config {
     mode = "Active"
