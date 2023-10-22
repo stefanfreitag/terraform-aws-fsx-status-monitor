@@ -4,6 +4,14 @@ variable "email" {
   default     = []
 }
 
+variable "ignore_states" {
+  description = "Suppress warnings for the listed FSx states. Default: ['CREATING', 'UPDATING']"
+  type        = list(string)
+  default = [
+    "CREATING", "UPDATING"
+  ]
+}
+
 variable "log_retion_period_in_days" {
   type        = number
   default     = 365
