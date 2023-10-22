@@ -23,3 +23,6 @@ terraform.rc
 
 # VSCode History plugin
 .history
+
+# Output directory for zipped Lambda functions
+out

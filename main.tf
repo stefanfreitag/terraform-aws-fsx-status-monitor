@@ -96,11 +96,11 @@ resource "aws_iam_role_policy_attachment" "fsx_health_permissions" {
 
 # Lambda function
 resource "aws_lambda_function" "fsx_health_lambda" {
-  filename                       = "${path.module}/fsx-lambda.zip"
+  filename                       = data.archive_file.status_checker_code.output_path
   function_name                  = "fsx-health-lambda-function-${random_id.id.hex}"
   description                    = "Monitor the FSx lifecycle status"
   role                           = aws_iam_role.fsx_health_lambda_role.arn
-  handler                        = "fsx-health.lambda_handler"
+  handler                        = "index.lambda_handler"
   runtime                        = "python3.8"
   memory_size                    = var.memory_size
   reserved_concurrent_executions = 1
@@ -112,7 +112,8 @@ resource "aws_lambda_function" "fsx_health_lambda" {
       LambdaSNSTopic = aws_sns_topic.fsx_health_sns_topic.arn
     }
   }
-  tags = var.tags
+  source_code_hash = data.archive_file.status_checker_code.output_base64sha256
+  tags             = var.tags
 }
 
 # eventbridge rule
