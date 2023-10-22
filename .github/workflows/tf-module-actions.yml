@@ -33,7 +33,7 @@ jobs:
     - name: Upload Trivy scan results to GitHub Security tab
       uses: github/codeql-action/upload-sarif@v2
       with:
-        sarif_file: 'results/trivy-config-results.sarif'
+        sarif_file: 'trivy-config-results.sarif'
         category: 'Trivy IaC Scan'
     - name: Run Trivy vulnerability scanner in Filesystem mode
       uses: aquasecurity/trivy-action@master
