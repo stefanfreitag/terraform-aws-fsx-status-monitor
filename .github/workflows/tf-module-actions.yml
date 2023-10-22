@@ -20,3 +20,33 @@ jobs:
         output-file: README.md
         output-method: inject
         git-push: "true"
+    - name: Run Trivy vulnerability scanner in IaC mode
+      uses: aquasecurity/trivy-action@master
+      with:
+        scan-type: 'config'
+        hide-progress: false
+        format: 'sarif'
+        output: 'trivy-config-results.sarif'
+        exit-code: '1'
+        ignore-unfixed: true
+        severity: 'CRITICAL,HIGH,MEDIUM'
+    - name: Upload Trivy scan results to GitHub Security tab
+      uses: github/codeql-action/upload-sarif@v2
+      with:
+        sarif_file: 'trivy-config-results.sarif'
+        category: 'Trivy IaC Scan'
+    - name: Run Trivy vulnerability scanner in Filesystem mode
+      uses: aquasecurity/trivy-action@master
+      with:
+        scan-type: 'fs'
+        hide-progress: false
+        format: 'sarif'
+        output: 'trivy-fs-results.sarif'
+        exit-code: '1'
+        ignore-unfixed: true
+        severity: 'CRITICAL,HIGH,MEDIUM'
+    - name: Upload Trivy Filesystem scan results to GitHub Security tab
+      uses: github/codeql-action/upload-sarif@v2
+      with:
+        sarif_file: 'trivy-fs-results.sarif'
+        category: 'Trivy Filesystem Scan'
