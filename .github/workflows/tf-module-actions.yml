@@ -26,25 +26,21 @@ jobs:
         scan-type: 'config'
         hide-progress: false
         format: 'sarif'
-        output: 'trivy-config-results.sarif'
+        output: '../results/trivy-config-results.sarif'
         exit-code: '1'
         ignore-unfixed: true
         severity: 'CRITICAL,HIGH,MEDIUAM'
-    - name: Upload Trivy scan results to GitHub Security tab
-      uses: github/codeql-action/upload-sarif@v2
-      with:
-        sarif_file: 'trivy-config-results.sarif'
     - name: Run Trivy vulnerability scanner in Filesystem mode
       uses: aquasecurity/trivy-action@master
       with:
         scan-type: 'fs'
         hide-progress: false
         format: 'sarif'
-        output: 'trivy-fs-results.sarif'
+        output: '../results/trivy-fs-results.sarif'
         exit-code: '1'
         ignore-unfixed: true
         severity: 'CRITICAL,HIGH,MEDIUAM'
     - name: Upload Trivy Filesystem scan results to GitHub Security tab
       uses: github/codeql-action/upload-sarif@v2
       with:
-        sarif_file: 'trivy-fs-results.sarif'
+        sarif_file: '../results/'
