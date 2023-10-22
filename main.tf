@@ -109,7 +109,8 @@ resource "aws_lambda_function" "fsx_health_lambda" {
   }
   environment {
     variables = {
-      LambdaSNSTopic = aws_sns_topic.fsx_health_sns_topic.arn
+      LambdaSNSTopic  = aws_sns_topic.fsx_health_sns_topic.arn
+      SUPPRESS_STATES = join(",", var.ignore_states)
     }
   }
   source_code_hash = data.archive_file.status_checker_code.output_base64sha256

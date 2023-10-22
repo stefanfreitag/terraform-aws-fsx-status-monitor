@@ -26,3 +26,6 @@ terraform.rc
 
 # Output directory for zipped Lambda functions
 out
+
+# Python
+.venv/
