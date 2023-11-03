@@ -3,7 +3,11 @@
 Deploys the FSx status monitor with a non-default configuration:
 
 - No SNS topic subscriber is set up.
-- The monitor is scheduled to run every 15 minutes instead of the default interval.
+- CloudWatch Alarms will be setup.
+- The monitor is scheduled to run every minute instead of the default interval.
+
+The list of FSx file system identifiers in `main.tf` is empty.
+It needs to be populated before deploying this example.
 
 <!-- BEGIN_TF_DOCS -->
 ## Requirements

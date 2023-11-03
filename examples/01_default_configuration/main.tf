@@ -1,5 +1,6 @@
 module "fsx_monitor" {
-  source = "../.."
+  source         = "../.."
+  filesystem_ids = []
   tags = {
     "Name" = "fsx-monitor"
   }

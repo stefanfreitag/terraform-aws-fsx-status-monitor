@@ -4,6 +4,24 @@ variable "email" {
   default     = []
 }
 
+variable "enable_cloudwatch_alarms" {
+  description = "Setup CloudWatch alarms for the FSx filesystem state. For each state a separate alarm will be created. Default is false."
+  type        = bool
+  default     = false
+}
+
+variable "enable_sns_notifications" {
+  description = "Setup SNS notifications for the FSx filesystem state. Default is false."
+  type        = bool
+  default     = false
+}
+
+variable "filesystem_ids" {
+  description = "List of filesystem identifiers. Default is empty list."
+  type        = list(string)
+  default     = []
+}
+
 variable "ignore_states" {
   description = "Suppress warnings for the listed FSx states. Default: ['CREATING', 'UPDATING']"
   type        = list(string)
@@ -35,9 +53,9 @@ variable "memory_size" {
 }
 
 variable "schedule_expression" {
-  description = "The schedule expression for the CloudWatch event rule. Default is 'rate(60 minutes)'."
+  description = "The schedule expression for the CloudWatch event rule. Default is 'rate(5 minutes)'."
   type        = string
-  default     = "rate(60 minutes)"
+  default     = "rate(5 minutes)"
 }
 
 variable "tags" {
