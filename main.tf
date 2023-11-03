@@ -44,6 +44,13 @@ resource "aws_iam_policy" "fsx_health_lambda_role_policy" {
             "Effect": "Allow"
         },
         {
+          "Action": [
+               "cloudwatch:PutMetricData"
+          ],
+          "Resource": "*",
+          "Effect": "Allow"
+        },
+        {
             "Action": [
                 "sns:Publish"
             ],
@@ -109,8 +116,11 @@ resource "aws_lambda_function" "fsx_health_lambda" {
   }
   environment {
     variables = {
-      LambdaSNSTopic  = aws_sns_topic.fsx_health_sns_topic.arn
-      SUPPRESS_STATES = join(",", var.ignore_states)
+      ENABLE_CLOUDWATCH_METRICS = var.enable_cloudwatch_alarms
+      ENABLE_SNS_NOTIFICATIONS  = var.enable_sns_notifications
+      FILESYSTEM_IDS            = join(",", var.filesystem_ids)
+      LambdaSNSTopic            = aws_sns_topic.fsx_health_sns_topic.arn
+      SUPPRESS_STATES           = join(",", var.ignore_states)
     }
   }
   source_code_hash = data.archive_file.status_checker_code.output_base64sha256
@@ -137,4 +147,28 @@ resource "aws_lambda_permission" "allow_cw_call_lambda" {
   function_name = aws_lambda_function.fsx_health_lambda.function_name
   principal     = "events.amazonaws.com"
   source_arn    = aws_cloudwatch_event_rule.fsx_health_lambda_schedule.arn
+}
+
+
+
+resource "aws_cloudwatch_metric_alarm" "this" {
+  for_each                  = toset(local.filesystem_ids)
+  namespace                 = "Custom/FSx"
+  period                    = 300
+  metric_name               = "Status"
+  alarm_name                = "fsx-status-monitor-${each.key}-${random_id.id.hex}"
+  comparison_operator       = "GreaterThanThreshold"
+  alarm_description         = "This alarm triggers on FSx filesystem status"
+  evaluation_periods        = 2
+  statistic                 = "Average"
+  threshold                 = 0
+  insufficient_data_actions = []
+  dimensions = {
+    FileSystemId = each.key
+  }
+  tags = var.tags
+}
+
+locals {
+  filesystem_ids = var.enable_cloudwatch_alarms ? var.filesystem_ids : []
 }
