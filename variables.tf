@@ -28,6 +28,10 @@ variable "ignore_states" {
   default = [
     "CREATING", "UPDATING"
   ]
+  validation {
+    condition     = alltrue([for state in var.ignore_states : contains(["AVAILABLE", "CREATING", "MISCONFIGURED", "MISCONFIGURED_UNAVAILABLE", "UPDATING", "DELETING", "FAILED"], state)])
+    error_message = "value"
+  }
 }
 
 variable "log_retion_period_in_days" {
