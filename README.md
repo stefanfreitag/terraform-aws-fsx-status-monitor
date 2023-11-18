@@ -51,6 +51,7 @@ No modules.
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
+| <a name="input_cloudwatch_alarms_treat_missing_data"></a> [cloudwatch\_alarms\_treat\_missing\_data](#input\_cloudwatch\_alarms\_treat\_missing\_data) | Sets how the alarms handle missing data points. The following values are supported: `missing`, `ignore`, `breaching` and `notBreaching`. Default is `breaching`. | `string` | `"breaching"` | no |
 | <a name="input_email"></a> [email](#input\_email) | List of e-mail addresses subscribing to the SNS topic. Default is empty list. | `list(string)` | `[]` | no |
 | <a name="input_enable_cloudwatch_alarms"></a> [enable\_cloudwatch\_alarms](#input\_enable\_cloudwatch\_alarms) | Setup CloudWatch alarms for the FSx filesystem state. For each state a separate alarm will be created. Default is false. | `bool` | `false` | no |
 | <a name="input_enable_sns_notifications"></a> [enable\_sns\_notifications](#input\_enable\_sns\_notifications) | Setup SNS notifications for the FSx filesystem state. Default is false. | `bool` | `false` | no |

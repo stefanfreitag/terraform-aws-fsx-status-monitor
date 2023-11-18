@@ -10,6 +10,17 @@ variable "enable_cloudwatch_alarms" {
   default     = false
 }
 
+variable "cloudwatch_alarms_treat_missing_data" {
+  description = "Sets how the alarms handle missing data points. The following values are supported: `missing`, `ignore`, `breaching` and `notBreaching`. Default is `breaching`."
+  type        = string
+  default     = "breaching"
+  validation {
+    condition     = can(regex("^(missing|ignore|breaching|notBreaching)$", var.cloudwatch_alarms_treat_missing_data))
+    error_message = "The value must be one of missing, ignore, breaching or notBreaching."
+  }
+}
+
+
 variable "enable_sns_notifications" {
   description = "Setup SNS notifications for the FSx filesystem state. Default is false."
   type        = bool

@@ -162,7 +162,10 @@ resource "aws_cloudwatch_metric_alarm" "this" {
   evaluation_periods        = 2
   statistic                 = "Average"
   threshold                 = 0
+  treat_missing_data        = var.cloudwatch_alarms_treat_missing_data
+  alarm_actions             = []
   insufficient_data_actions = []
+  ok_actions                = []
   dimensions = {
     FileSystemId = each.key
   }
