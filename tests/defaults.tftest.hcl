@@ -1,3 +1,12 @@
+run "aws_lambda_function_runtime_default" {
+  command = plan
+
+  assert {
+    condition     = aws_lambda_function.fsx_health_lambda.runtime == "python3.12"
+    error_message = "Lambda runtime is not Python 3.12."
+  }
+}
+
 run "eventbridge_default_schedule_expression" {
   command = plan
 
