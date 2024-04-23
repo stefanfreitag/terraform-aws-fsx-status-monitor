@@ -10,18 +10,18 @@ jobs:
   checks:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
       with:
         ref: ${{ github.event.pull_request.head.ref }}
     - name: Render terraform docs inside the README.md and push changes back to PR branch
-      uses: terraform-docs/gh-actions@v1.0.0
+      uses: terraform-docs/gh-actions@v1.1.0
       with:
         working-dir: .,examples/01_default_configuration,examples/02_custom_schedule
         output-file: README.md
         output-method: inject
         git-push: "true"
     - name: Run Trivy vulnerability scanner in IaC mode
-      uses: aquasecurity/trivy-action@0.13.1
+      uses: aquasecurity/trivy-action@0.19.0
       with:
         scan-type: 'config'
         hide-progress: false
@@ -31,7 +31,7 @@ jobs:
         ignore-unfixed: true
         severity: 'CRITICAL,HIGH,MEDIUM'
     - name: Upload Trivy scan results to GitHub Security tab
-      uses: github/codeql-action/upload-sarif@v2
+      uses: github/codeql-action/upload-sarif@v3
       with:
         sarif_file: 'trivy-config-results.sarif'
         category: 'Trivy IaC Scan'
