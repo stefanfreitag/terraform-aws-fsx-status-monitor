@@ -132,7 +132,7 @@ resource "aws_cloudwatch_event_rule" "fsx_health_lambda_schedule" {
   name                = "fsx-health-eventbridge-rule-${random_id.id.hex}"
   description         = "Scheduled execution of the FSx monitor"
   schedule_expression = var.schedule_expression
-  is_enabled          = true
+  state               = "ENABLED"
   tags                = var.tags
 }
 
