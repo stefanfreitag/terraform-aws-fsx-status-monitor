@@ -62,6 +62,12 @@ variable "ignore_states" {
   }
 }
 
+variable "lambda_insights_layers_arn" {
+  description = "The ARN of the Lambda Insights layer. Default is `null`."
+  type        = string
+  default     = null
+}
+
 variable "log_retion_period_in_days" {
   type        = number
   default     = 365
