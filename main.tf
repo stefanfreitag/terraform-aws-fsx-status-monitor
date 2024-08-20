@@ -92,7 +92,12 @@ EOF
   tags               = var.tags
 }
 
-# IAM role attachment
+resource "aws_iam_role_policy_attachment" "fsx_health_lambda_insights" {
+  count      = var.lambda_insights_layers_arn == null ? 0 : 1
+  role       = aws_iam_role.fsx_health_lambda_role.name
+  policy_arn = "arn:aws:iam::aws:policy/CloudWatchLambdaInsightsExecutionRolePolicy"
+}
+
 resource "aws_iam_role_policy_attachment" "fsx_health_permissions" {
   role       = aws_iam_role.fsx_health_lambda_role.name
   policy_arn = aws_iam_policy.fsx_health_lambda_role_policy.arn
@@ -103,14 +108,16 @@ resource "aws_iam_role_policy_attachment" "fsx_health_permissions" {
 
 # Lambda function
 resource "aws_lambda_function" "fsx_health_lambda" {
-  filename                       = data.archive_file.status_checker_code.output_path
-  function_name                  = "fsx-health-lambda-function-${random_id.id.hex}"
-  description                    = "Monitor the FSx lifecycle status"
-  role                           = aws_iam_role.fsx_health_lambda_role.arn
-  handler                        = "index.lambda_handler"
-  runtime                        = "python3.12"
-  memory_size                    = var.memory_size
-  timeout                        = var.timeout
+  filename      = data.archive_file.status_checker_code.output_path
+  function_name = "fsx-health-lambda-function-${random_id.id.hex}"
+  description   = "Monitor the FSx lifecycle status"
+  role          = aws_iam_role.fsx_health_lambda_role.arn
+  handler       = "index.lambda_handler"
+  runtime       = "python3.12"
+  memory_size   = var.memory_size
+  timeout       = var.timeout
+  layers        = var.lambda_insights_layers_arn == null ? [] : [var.lambda_insights_layers_arn]
+
   reserved_concurrent_executions = 1
   tracing_config {
     mode = "Active"
