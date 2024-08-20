@@ -7,6 +7,15 @@ run "aws_lambda_function_runtime_default" {
   }
 }
 
+run "aws_lambda_function_timeout_default" {
+  command = plan
+
+  assert {
+    condition     = aws_lambda_function.fsx_health_lambda.timeout == 30
+    error_message = "Lambda timeout is not 30 seconds."
+  }
+}
+
 run "eventbridge_default_schedule_expression" {
   command = plan
 
