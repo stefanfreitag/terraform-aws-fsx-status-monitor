@@ -110,6 +110,7 @@ resource "aws_lambda_function" "fsx_health_lambda" {
   handler                        = "index.lambda_handler"
   runtime                        = "python3.12"
   memory_size                    = var.memory_size
+  timeout                        = var.timeout
   reserved_concurrent_executions = 1
   tracing_config {
     mode = "Active"

@@ -96,3 +96,13 @@ variable "tags" {
   default = {
   }
 }
+
+variable "timeout" {
+  type        = number
+  description = "The amount of time that Lambda allows a function to run before stopping it. Default is 30 seconds."
+  default     = 30
+  validation {
+    condition     = var.timeout >= 10 && var.timeout <= 900
+    error_message = "Timeout must be between 10 and 900."
+  }
+}
