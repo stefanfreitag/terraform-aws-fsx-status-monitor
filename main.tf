@@ -117,8 +117,6 @@ resource "aws_lambda_function" "fsx_health_lambda" {
   memory_size   = var.memory_size
   timeout       = var.timeout
   layers        = var.lambda_insights_layers_arn == null ? [] : [var.lambda_insights_layers_arn]
-
-  reserved_concurrent_executions = 1
   tracing_config {
     mode = "Active"
   }
