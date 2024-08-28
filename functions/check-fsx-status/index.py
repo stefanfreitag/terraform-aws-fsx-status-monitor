@@ -44,7 +44,7 @@ def lambda_handler(event, context):
         status = response["FileSystems"][0].get("Lifecycle")
 
         if status not in VALID_STATES:
-            logging.info("The file system {} needs attention.".format(fs_id))
+            logger.info("The file system {} needs attention.".format(fs_id))
             if ENABLE_SNS_NOTIFICATIONS:
                 sns.publish(
                     TopicArn=LAMBDASNSTOPIC,
@@ -54,20 +54,20 @@ def lambda_handler(event, context):
                     + status,
                     Subject="FSx Health Warning!",
                 )
-                logging.info("Successfully sent SNS notification for filesystem {}".format(fs_id))
+                logger.info("Successfully sent SNS notification for filesystem {}".format(fs_id))
             if ENABLE_CLOUDWATCH_METRICS:
                 put_custom_metric(cloudwatch, fs_id, 1)
-                logging.info("Successfully put metric for filesystem {}".format(fs_id))
+                logger.info("Successfully put metric for filesystem {}".format(fs_id))
 
         else:
-            logging.info(
+            logger.info(
                 "The file system {} is in a healthy state, and is reachable and available for use.".format(
                     fs_id
                 )
             )
             if ENABLE_CLOUDWATCH_METRICS:
                 put_custom_metric(cloudwatch, fs_id, 0)
-                logging.info("Successfully put metric for filesystem {}".format(fs_id))
+                logger.info("Successfully put metric for filesystem {}".format(fs_id))
 
     return {"statusCode": 200, "body": "OK"}
 
