@@ -3,11 +3,8 @@ import logging
 import boto3
 import os
 
-logging.basicConfig(
-    level=logging.INFO, format="%(asctime)s - %(levelname)s - %(name)s - %(message)s"
-)
 logger = logging.getLogger(__name__)
-
+logger.setLevel(logging.INFO)
 
 try:
     ENABLE_CLOUDWATCH_METRICS = os.environ["ENABLE_CLOUDWATCH_METRICS"]
