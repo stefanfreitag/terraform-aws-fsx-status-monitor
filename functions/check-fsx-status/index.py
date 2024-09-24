@@ -8,9 +8,7 @@ logger.setLevel(logging.INFO)
 
 try:
     ENABLE_CLOUDWATCH_METRICS = os.environ["ENABLE_CLOUDWATCH_METRICS"]
-    ENABLE_SNS_NOTIFICATIONS = os.environ["ENABLE_SNS_NOTIFICATIONS"]
     FILESYSTEM_IDS = os.environ["FILESYSTEM_IDS"].split(",")
-    LAMBDASNSTOPIC = os.environ["LambdaSNSTopic"]
     SUPPRESS_STATES = os.environ["SUPPRESS_STATES"].split(",")
     VALID_STATES = ["AVAILABLE"] + SUPPRESS_STATES
 except KeyError as e:
@@ -23,9 +21,6 @@ def lambda_handler(event, context):
 
     fsx = boto3.client("fsx")
     logger.info("Successfully created fsx client")
-
-    sns = boto3.client("sns")
-    logger.info("Successfully created sns client")
 
     cloudwatch = boto3.client("cloudwatch")
     logger.info("Successfully created cloudwatch client")
@@ -45,16 +40,6 @@ def lambda_handler(event, context):
 
         if status not in VALID_STATES:
             logger.info("The file system {} needs attention.".format(fs_id))
-            if ENABLE_SNS_NOTIFICATIONS:
-                sns.publish(
-                    TopicArn=LAMBDASNSTOPIC,
-                    Message="File System "
-                    + fs_id
-                    + " needs attention. The status is "
-                    + status,
-                    Subject="FSx Health Warning!",
-                )
-                logger.info("Successfully sent SNS notification for filesystem {}".format(fs_id))
             if ENABLE_CLOUDWATCH_METRICS:
                 put_custom_metric(cloudwatch, fs_id, 1)
                 logger.info("Successfully put metric for filesystem {}".format(fs_id))

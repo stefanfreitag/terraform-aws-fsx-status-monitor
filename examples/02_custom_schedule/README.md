@@ -2,7 +2,6 @@
 
 Deploys the FSx status monitor with a non-default configuration:
 
-- No SNS topic subscriber is set up.
 - CloudWatch Alarms will be setup.
 - The monitor is scheduled to run every minute instead of the default interval.
 
