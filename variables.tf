@@ -70,8 +70,8 @@ variable "log_retion_period_in_days" {
 
 variable "name" {
   type        = string
-  description = "Name of the health monitor. Default is `rds_status_monitor`."
-  default     = "rds_status_monitor"
+  description = "Name of the health monitor. Default is `fsx_status_monitor`."
+  default     = "fsx_status_monitor"
 }
 
 
