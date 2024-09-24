@@ -2,7 +2,6 @@
 
 Deploys the FSx status monitor with no additional configuration:
 
-- No SNS topic subscriber is set up.
 - No CloudWatch alarms are set up.
 - The monitor is scheduled to run every 5 minutes.
 

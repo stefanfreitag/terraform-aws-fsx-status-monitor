@@ -1,9 +1,3 @@
-variable "email" {
-  description = "List of e-mail addresses subscribing to the SNS topic. Default is empty list."
-  type        = list(string)
-  default     = []
-}
-
 variable "enable_cloudwatch_alarms" {
   description = "Setup CloudWatch alarms for the FSx filesystem state. For each state a separate alarm will be created. Default is false."
   type        = bool
@@ -36,12 +30,6 @@ variable "ok_actions" {
   description = "The list of actions to execute when this alarm transitions into an OK state from any other state. Each action is specified as an Amazon Resource Name (ARN). Default is `null`"
   type        = list(string)
   default     = null
-}
-
-variable "enable_sns_notifications" {
-  description = "Setup SNS notifications for the FSx filesystem state. Default is false."
-  type        = bool
-  default     = false
 }
 
 variable "filesystem_ids" {
@@ -79,6 +67,13 @@ variable "log_retion_period_in_days" {
     error_message = "log_retion_period_in_days must be one of the allowed values: 1, 3, 5, 7, 14, 30, 60, 90, 120, 150, 180, 365, 400, 545, 731, 1096, 1827, 2192, 2557, 2922, 3288, 3653"
   }
 }
+
+variable "name" {
+  type        = string
+  description = "Name of the health monitor. Default is `rds_status_monitor`."
+  default     = "rds_status_monitor"
+}
+
 
 variable "memory_size" {
   type        = number
